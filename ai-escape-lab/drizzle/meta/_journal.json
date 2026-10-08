@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791453449553,
+      "tag": "0000_aromatic_absorbing_man",
+      "breakpoints": true
+    }
+  ]
+}

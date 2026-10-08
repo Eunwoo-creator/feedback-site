@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>가람중학교 · 수업 뒤 피드백</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fa; color: #1e293b; font-family: system-ui, sans-serif; line-height: 1.6; }
+    main { max-width: 560px; margin: 10vh auto; padding: 28px; }
+    section { padding: 28px; background: white; border: 1px solid #dce3ec; border-radius: 18px; }
+    h1 { font-size: 25px; margin-top: 0; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; }
+    input { width: 100%; padding: 12px; border: 1px solid #94a3b8; border-radius: 8px; font: inherit; }
+    button { margin-top: 16px; padding: 11px 18px; border: 0; border-radius: 8px; background: #2456a6; color: white; font: inherit; cursor: pointer; }
+    button.secondary { background: #e9eef5; color: #1e293b; margin-left: 8px; }
+    :focus-visible { outline: 3px solid #e8a923; outline-offset: 3px; }
+    .error { color: #b42318; min-height: 1.6em; }
+    .caption { color: #526176; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="caption">가람중학교 2학년 과학 · 전기와 자기</p>
+    <div id="screen"></div>
+  </main>
+  <script>
+    'use strict';
+    const screen = document.getElementById('screen');
+    // 관리자 확인 상태는 저장하지 않는다. 새로 열거나 새로고침하면 다시 확인한다.
+    let adminVerified = false;
+
+    function showHome() {
+      adminVerified = false;
+      screen.replaceChildren();
+      screen.innerHTML = '<section><h1>수업 뒤 피드백</h1><button id="open-teacher" type="button">선생님 화면 열기</button></section>';
+      document.getElementById('open-teacher').addEventListener('click', showPassword);
+    }
+
+    function showPassword() {
+      adminVerified = false;
+      // 앞 화면의 내용을 제거한 뒤 비밀번호 화면만 만든다.
+      screen.replaceChildren();
+      screen.innerHTML = '<section><h1>선생님 화면 입장</h1><form id="password-form" novalidate><label for="password">관리자 비밀번호</label><input id="password" type="password" autocomplete="off" aria-describedby="password-error"><p id="password-error" class="error" role="alert"></p><button type="submit">입장하기</button><button id="cancel" type="button" class="secondary">돌아가기</button></form></section>';
+      document.getElementById('password-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const field = document.getElementById('password');
+        if (field.value !== 'teacher-demo') {
+          adminVerified = false;
+          document.getElementById('password-error').textContent = '비밀번호를 확인해 주세요.';
+          field.setAttribute('aria-invalid', 'true');
+          field.focus();
+          return;
+        }
+        adminVerified = true;
+        field.value = '';
+        showTeacher();
+      });
+      document.getElementById('cancel').addEventListener('click', showHome);
+      document.getElementById('password').focus();
+    }
+
+    function showTeacher() {
+      if (!adminVerified) {
+        showPassword();
+        return;
+      }
+      screen.replaceChildren();
+      screen.innerHTML = '<section><h1>선생님 화면</h1><p>관리자 비밀번호를 확인했습니다.</p><p class="caption">학생 목록과 피드백 화면은 아직 구현되지 않았습니다.</p><button id="leave-teacher" type="button">나가기</button></section>';
+      document.getElementById('leave-teacher').addEventListener('click', showHome);
+      document.getElementById('leave-teacher').focus();
+    }
+
+    showHome();
+  </script>
+</body>
+</html>
